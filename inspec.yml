@@ -1,0 +1,8 @@
+name: vra7-hardening
+title: vRA7 Hardening compliance check
+maintainer: Brett Johnson
+copyright: Brett Johnson
+copyright_email: brett@sdbrett.com
+license: Apache-2.0
+summary: Verify vRA deployment configuration against VMware vRA7 hardening guide
+version: 0.1.0
