@@ -1,11 +1,8 @@
-# TODO: /etc/ssh/*keys
- 
-control 'check-ssh-private-key-permissiosn' do
+control 'check-ssh-private-key-permissions' do
   impact 1
   title 'Verify permissions of the ssh private keys'
-  desc 'Verify permissiosn of the ssh private keys'
-
-  keys = command('ls -1 /etc/ssh/*_keys').stdout.lines
+  desc 'Verify permissions of the ssh private keys'
+  keys = command('ls -1 /etc/ssh/*.key').stdout.lines
   keys.each do |key|
     key.strip!
     describe file(key) do
