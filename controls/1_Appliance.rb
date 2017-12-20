@@ -1,23 +1,17 @@
+control 'cis-dil-benchmark-1.4.2' do
+  title 'Ensure bootloader password is set'
+  desc  "Setting the boot loader password will require that anyone rebooting the system must enter a password before being able to set command line boot parameters\n\nRationale: Requiring a boot password upon execution of the boot loader will prevent an unauthorized user from entering boot parameters or changing the boot partition. This prevents users from weakening security (e.g. turning off SELinux at boot time)."
+  impact 1.0
 
-control 'additional-administrative-account' do
-    title 'Verify administrative account has been created'
-    desc  "As a security best practice, create and configure local administrative accounts for Secure Shell (SSH) on your
-virtual appliance host machines. Also, remove root SSH access after you create the appropriate accounts."
-    impact 1.0
-  
-    tag vra: 'Create-Local-Administrator-Account-for-Secure-Shell'
-    tag level: 1
-  
-    describe file('/etc/ssh/sshd_config') do
-      it { should exist }
-      it { should_not be_readable.by 'group' }
-      it { should_not be_writable.by 'group' }
-      it { should_not be_executable.by 'group' }
-      it { should_not be_readable.by 'other' }
-      it { should_not be_writable.by 'other' }
-      it { should_not be_executable.by 'other' }
-      its(:uid) { should cmp 0 }
-      its(:gid) { should cmp 0 }
+  tag cis: 'distribution-independent-linux:1.4.2'
+  tag level: 1
+
+  describe.one do
+    %w(/boot/grub/grub.conf /boot/grub/grub.cfg /boot/grub/menu.lst /boot/boot/grub/grub.conf /boot/boot/grub/grub.cfg /boot/boot/grub/menu.lst).each do |f|
+      describe file(f) do
+        its(:content) { should match(/^set superusers/) }
+        its(:content) { should match(/^password/) }
+      end
     end
   end
-
+end
