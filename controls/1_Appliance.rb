@@ -1,4 +1,4 @@
-=begin
+
 control 'additional-administrative-account' do
     title 'Verify administrative account has been created'
     desc  "As a security best practice, create and configure local administrative accounts for Secure Shell (SSH) on your
@@ -20,4 +20,4 @@ virtual appliance host machines. Also, remove root SSH access after you create t
       its(:gid) { should cmp 0 }
     end
   end
-=end
+
