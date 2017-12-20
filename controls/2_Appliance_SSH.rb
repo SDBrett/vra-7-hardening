@@ -17,7 +17,7 @@ control 'check-ssh-public-key-permissions' do
   impact 1
   title 'Verify permissions of the ssh public keys'
   desc 'Verify permissions of the ssh public keys'
-  keys = command('ls -1 /etc/ssh/*key.pub').stdout.lines
+  keys = command('ls -1 /etc/ssh/_key.pub').stdout.lines
   keys.each do |key|
     key.strip!
     describe file(key) do
@@ -28,7 +28,6 @@ control 'check-ssh-public-key-permissions' do
   end
 end
 
-# TODO: /etc/ssh/*key.pub
 
 control 'check-ssh-config-permissiosn' do
   impact 1
