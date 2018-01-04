@@ -1,4 +1,4 @@
-control '2_Appliance_SSH_2.1' do
+control '2_Appliance_SSHD_2.1' do
   title 'Verify that the SSH service is not set to auto start'
   desc  "SSH access should only be used for troubleshooting. As such, it should not be configured to auto start on boot. Check for running is not configured as SSH is required for access to run compliance."
   describe service('sshd') do
@@ -6,7 +6,7 @@ control '2_Appliance_SSH_2.1' do
   end
 end
 
-control '2_Appliance_SSH_2.2' do
+control '2_Appliance_SSHD_2.2' do
   title 'Verify permissions of the ssh private keys'
   desc 'Verify permissions of the ssh private keys'
   keys = command('ls -1 /etc/ssh/*_key').stdout.lines
@@ -20,7 +20,7 @@ control '2_Appliance_SSH_2.2' do
   end
 end
 
-control '2_Appliance_SSH_2.3' do
+control '2_Appliance_SSHD_2.3' do
   title 'Verify permissions of the ssh public keys'
   desc 'Verify permissions of the ssh public keys'
   keys = command('ls -1 /etc/ssh/*_key.pub').stdout.lines
@@ -34,7 +34,7 @@ control '2_Appliance_SSH_2.3' do
   end
 end
 
-control '2_Appliance_SSH_2.4' do
+control '2_Appliance_SSHD_2.4' do
   impact 1
   title 'Verify permissions of ssh_config'
   desc 'Verifies that only root can modify sshd_config'
@@ -51,16 +51,15 @@ control '2_Appliance_SSH_2.4' do
   end
 end
 
-control '2_Appliance_SSH_2.5' do
+control '2_Appliance_SSHD_2.5' do
   title 'Client all should not be allowed'
   desc 'By default, the /etc/hosts.allow file contains a generic entry, sshd: ALL : ALLOW , that allows all access to the secure shell. Restrict this access as appropriate for your organization.'
   describe etc_hosts_allow.where { daemon == 'sshd' } do
-      its('options') { should_not cmp 'ALLOW' }
-      its('options') { should_not include ['ALL', "ALLOW"]}
+      its('client_list') { should_not include ['ALL'] }
     end
 end
 
-control '2_Appliance_SSH_2.6' do
+control '2_Appliance_SSHD_2.6' do
   title 'Verify SSH server configuration'
   desc ""
   describe sshd_config do
@@ -81,5 +80,7 @@ control '2_Appliance_SSH_2.6' do
     its(:StrictModes) { should eq 'yes' }
     its(:Ciphers) {should eq 'aes256-ctr,aes128-ctr'}
     its(:MACs) {should eq 'hmac-sha1'}
+    its(:GSSAPIAuthentication) {should eq 'no'}
+    its(:KeberosAuthentication) {should eq 'no'}
   end
 end
