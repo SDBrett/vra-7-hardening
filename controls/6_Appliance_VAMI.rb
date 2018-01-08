@@ -6,7 +6,6 @@ control '6_Appliance_VAMI_6.1' do
     end
 end
 
-
 control '1_Appliance_VAMI_6.2' do
     title 'Validate if FIPS has been enabled'
     desc 'The vRealize Automation appliance now uses the Federal Information Processing Standard (FIPS) 140-2 certified version of OpenSSL for data-in-transit over TLS on all inbound and outbound network traffic.'
