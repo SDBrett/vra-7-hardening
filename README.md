@@ -5,18 +5,21 @@ This profile implements the [CIS VMware ESXi Benchmark](https://docs.vmware.com/
 
 ## Prerequities
 
-TODO: Add prereqs
+- [InSpec](https://inspec.io)
 
-##Usage
+You will need to run this on the vRA Appliance. You can install `inspec` via the Chef DK.
 
-Currently can be run against servers via inspec exec
+```shell
+~$ curl -L https://chef.io/chef/install.sh | sudo bash -s -- -P chefdk
+```
 
-TODO: Add usage information
+## Usage
 
+Currently can be run against servers via inspec exec.
 
-## Attributes
-
-TODO: Add attributes
+```shell
+~$ inspec exec .
+```
 
 ## License and Author
 
