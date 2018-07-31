@@ -4,7 +4,7 @@ control '6_Appliance_VAMI_6.1' do
   title 'Verify root account as been removed from vami group'
   desc 'An additional VAMI user account should be created and added to the vami group. After this has been done, it is recommended that the root account is removed from the vami group.'
   describe etc_group.where(name: 'vami') do
-    its(users) { should_not include 'root' }
+    its('users') { should_not include 'root' }
   end
 end
 
