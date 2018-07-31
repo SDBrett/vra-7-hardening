@@ -94,9 +94,9 @@ control '1_Appliance_1.3' do
   desc 'By default some localhost communication does not use TLS. You can enable TLS across all localhost connections to provide enhanced security.'
 
   describe file('/etc/vcac/vcac.keystore') do
-      it { should be_owned_by 'vcac' }
-      it { should be_grouped_into 'pivotal' }
-      its('mode') { should cmp '0640' }
+    it { should be_owned_by 'vcac' }
+    it { should be_grouped_into 'pivotal' }
+    its('mode') { should cmp '0640' }
   end
 
   describe file('/etc/haproxy/conf.d/20-vcac-config.cfg') do
@@ -134,12 +134,12 @@ control '1_Appliance_1.5' do
   desc 'By default some localhost communication does not use TLS. You can enable TLS across all \
         localhost connections to provide enhanced security.'
   describe xml('/etc/vcac/server.xml') do
-    its('Server/Service/Connector::scheme') {should eq 'https'}
-    its('Server/Service/Connector::secure') {should eq 'true'}
-    its('Server/Service/Connector::SSLEnabled') {should eq 'true'}
-    its('Server/Service/Connector::sslProtocol') {should eq 'TLS'}
-    its('Server/Service/Connector::keystoreFile') {should eq '/etc/vcac/vcac.keystore'}
-    its('Server/Service/Connector::keyAlias') {should eq 'apache'}
+    its('Server/Service/Connector::scheme') { should eq 'https' }
+    its('Server/Service/Connector::secure') { should eq 'true' }
+    its('Server/Service/Connector::SSLEnabled') { should eq 'true' }
+    its('Server/Service/Connector::sslProtocol') { should eq 'TLS' }
+    its('Server/Service/Connector::keystoreFile') { should eq '/etc/vcac/vcac.keystore' }
+    its('Server/Service/Connector::keyAlias') { should eq 'apache' }
     its('Server/Service/Connector::keystorePass') { should_not eq nil }
   end
 end
@@ -147,8 +147,8 @@ end
 control '1_Appliance_1.6' do
   title 'Disable disallowed ciphers'
   desc 'Validates disallowed ciphers are disallowed'
-  security_properties_file = File.open('/etc/vcac/security.properties').read()
-  current_disallowed =security_properties_file.match(/(?<=consoleproxy.ssl.ciphers.disallowed=).*$/)[0]
+  security_properties_file = File.open('/etc/vcac/security.properties').read
+  current_disallowed = security_properties_file.match(/(?<=consoleproxy.ssl.ciphers.disallowed=).*$/)[0]
   describe current_disallowed do
     disallowed_ciphers.each do |s|
       its('content') { should_not include s }
