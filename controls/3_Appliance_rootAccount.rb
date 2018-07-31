@@ -25,7 +25,7 @@ control '3_Appliance_rootAccount_3.3' do
   end
 end
 
-control '3_Appliance_rootAccount_3.3' do
+control '3_Appliance_rootAccount_3.4' do
   title 'Check that root password expiration time has not been increased above default of 365 days'
   desc  'The root account has a default password expiration of 365 days. For hardended systems this should be reduced to 90 days'
   describe shadow.users('root') do
