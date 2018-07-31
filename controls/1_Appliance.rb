@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-control 'cis-dil-benchmark-1.4.2' do
+control '1_Appliance_1.1' do
   title 'Ensure bootloader password is set'
   desc  "Setting the boot loader password will require that anyone rebooting the system must enter a password before being able to set command line boot parameters\n\nRationale: Requiring a boot password upon execution of the boot loader will prevent an unauthorized user from entering boot parameters or changing the boot partition. This prevents users from weakening security (e.g. turning off SELinux at boot time)."
-  impact 1.0
 
   describe.one do
     %w[/boot/grub/grub.conf /boot/grub/grub.cfg /boot/grub/menu.lst /boot/boot/grub/grub.conf /boot/boot/grub/grub.cfg /boot/boot/grub/menu.lst].each do |f|
@@ -95,7 +94,7 @@ control '1_Appliance_1.3' do
   end
 end
 
-control 'Disabled TLS 1.0' do
+control '1_Appliance_1.4' do
   title 'Disable TLS 1.0 in applicable vRealize Automation components'
   desc 'There is no directive to disable TLS 1.0 in Lighttpd. The restriction on TLS 1.0 use can be partially mitigated by enforcing that OpenSSL does not use cipher suites of TLS 1.0 as described in step 2 below.'
 
