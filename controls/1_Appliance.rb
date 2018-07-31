@@ -77,11 +77,9 @@ control '1_Appliance_1.3' do
   desc 'By default some localhost communication does not use TLS. You can enable TLS across all localhost connections to provide enhanced security.'
 
   describe file('/etc/vcac/vcac.keystore') do
-    describe file(key) do
       it { should be_owned_by 'vcac' }
       it { should be_grouped_into 'pivotal' }
       its('mode') { should cmp '0640' }
-    end
   end
 
   describe file('/etc/haproxy/conf.d/20-vcac-config.cfg') do
