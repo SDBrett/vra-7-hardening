@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-control '2_Appliance_SSH_Client_7.1' do
+control '7_Appliance_SSH_Client_7.1' do
   title 'Verify permissions of the ssh private keys'
   desc 'Verify permissions of the ssh private keys'
   keys = command('ls -1 /etc/ssh/*_key').stdout.lines
@@ -14,7 +14,7 @@ control '2_Appliance_SSH_Client_7.1' do
   end
 end
 
-control '2_Appliance_SSH_Client_7.2' do
+control '7_Appliance_SSH_Client_7.2' do
   title 'Verify permissions of the ssh public keys'
   desc 'Verify permissions of the ssh public keys'
   keys = command('ls -1 /etc/ssh/*_key.pub').stdout.lines
@@ -28,8 +28,7 @@ control '2_Appliance_SSH_Client_7.2' do
   end
 end
 
-control '2_Appliance_SSH_Client_7.3' do
-  impact 1
+control '7_Appliance_SSH_Client_7.3' do
   title 'Verify permissions of ssh_config'
   desc 'Verifies that only root can modify ssh_config'
   describe file('/etc/ssh/ssh_config') do
@@ -39,7 +38,7 @@ control '2_Appliance_SSH_Client_7.3' do
   end
 end
 
-control '2_Appliance_SSH_Client_7.4' do
+control '7_Appliance_SSH_Client_7.4' do
   title 'Verify SSH client configuration'
   desc ''
   describe ssh_config do

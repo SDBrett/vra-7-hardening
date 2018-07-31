@@ -3,7 +3,7 @@
 shadow_files = ['/etc/shadow']
 shadow_files << '/usr/share/baselayout/shadow' if file('/etc/nsswitch.conf').content =~ /^shadow:\s+(\S+\s+)*usrfiles/
 
-control 'cis-dil-benchmark-5.4.1.1' do
+control '4_Appliance_User_Accounts_4.1' do
   title 'Ensure password expiration is 90 days or less'
   desc  ''
   describe login_defs do
