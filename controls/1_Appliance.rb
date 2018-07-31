@@ -1,5 +1,23 @@
 # frozen_string_literal: true
 
+disallowed_ciphers = %w[TLS_DH_DSS_WITH_AES_128_CBC_SHA
+                        TLS_DH_DSS_WITH_AES_256_CBC_SHA
+                        TLS_DH_RSA_WITH_AES_256_CBC_SHA
+                        TLS_DHE_DSS_WITH_AES_128_CBC_SHA
+                        TLS_DHE_DSS_WITH_AES_256_CBC_SHA
+                        TLS_DHE_RSA_WITH_AES_128_CBC_SHA
+                        TLS_DHE_RSA_WITH_AES_256_CBC_SHA]
+
+strong_ciphers = %w[TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+                    TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+                    TLS_EC
+                    DHE_ECDSA_WITH_AES_128_CBC_SHA256
+                    TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256
+                    TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+                    TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+                    TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384
+                    TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384]
+
 control '1_Appliance_1.1' do
   title 'Ensure bootloader password is set'
   desc  "Setting the boot loader password will require that anyone rebooting the system must enter a password before being able to set command line boot parameters\n\nRationale: Requiring a boot password upon execution of the boot loader will prevent an unauthorized user from entering boot parameters or changing the boot partition. This prevents users from weakening security (e.g. turning off SELinux at boot time)."
@@ -108,5 +126,44 @@ control '1_Appliance_1.4' do
 
   describe file('/opt/vmware/etc/lighttpd/lighttpd.conf') do
     its('content') { should include 'ssl.cipher-list = "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSACHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSAAES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256"' }
+  end
+end
+
+control '1_Appliance_1.5' do
+  title 'Validate appliance TLS settings'
+  desc 'By default some localhost communication does not use TLS. You can enable TLS across all \
+        localhost connections to provide enhanced security.'
+  describe xml('/etc/vcac/server.xml') do
+    its('Server/Service/Connector::scheme') {should eq 'https'}
+    its('Server/Service/Connector::secure') {should eq 'true'}
+    its('Server/Service/Connector::SSLEnabled') {should eq 'true'}
+    its('Server/Service/Connector::sslProtocol') {should eq 'TLS'}
+    its('Server/Service/Connector::keystoreFile') {should eq '/etc/vcac/vcac.keystore'}
+    its('Server/Service/Connector::keyAlias') {should eq 'apache'}
+    its('Server/Service/Connector::keystorePass') { should_not eq nil }
+  end
+end
+
+control '1_Appliance_1.6' do
+  title 'Disable disallowed ciphers'
+  desc 'Validates disallowed ciphers are disallowed'
+  security_properties_file = File.open('/etc/vcac/security.properties').read()
+  current_disallowed =security_properties_file.match(/(?<=consoleproxy.ssl.ciphers.disallowed=).*$/)[0]
+  describe current_disallowed do
+    disallowed_ciphers.each do |s|
+      its('content') { should_not include s }
+    end
+  end
+end
+
+control '1_Appliance_1.7' do
+  title 'Validate appliance TLS settings'
+  desc 'By default some localhost communication does not use TLS. You can enable TLS across all localhost connections \
+        to provide enhanced security.'
+  describe xml('/etc/vcac/server.xml') do
+    its('Server/Service/Connector::ciphers') { should_not eq nil }
+    strong_ciphers.each do |s|
+      its('Server/Service/Connector::ciphers') { should include s }
+    end
   end
 end
