@@ -142,6 +142,16 @@ control '1_Appliance_1.5' do
     its('Server/Service/Connector::keyAlias') { should eq 'apache' }
     its('Server/Service/Connector::keystorePass') { should_not eq nil }
   end
+
+    describe xml('/etc/vco/app/server.xml') do
+      its('Server/Service/Connector::scheme') { should eq 'https' }
+      its('Server/Service/Connector::secure') { should eq 'true' }
+      its('Server/Service/Connector::SSLEnabled') { should eq 'true' }
+      its('Server/Service/Connector::sslProtocol') { should eq 'TLS' }
+      its('Server/Service/Connector::keystoreFile') { should eq '/etc/vcac/vcac.keystore' }
+      its('Server/Service/Connector::keyAlias') { should eq 'apache' }
+      its('Server/Service/Connector::keystorePass') { should_not eq nil }
+  end
 end
 
 control '1_Appliance_1.6' do
