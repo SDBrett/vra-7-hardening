@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 control '8_Appliance_Application_Files_8.1' do
   title 'Validate application resources'
@@ -22,6 +23,7 @@ control '8_Appliance_Application_Files_8.1' do
     it { should be_setuid }
     its('mode') { should cmp '04750' }
   end
+
   describe file '/usr/lib/PolicyKit/polkit-grant-helper' do
     it { should be_owned_by 'root' }
     it { should be_grouped_into 'polkituser' }
@@ -50,12 +52,12 @@ control '8_Appliance_Application_Files_8.1' do
     its('mode') { should cmp '04711' }
   end
 
-  #describe file '/usr/sbin/utempter' do
+  # describe file '/usr/sbin/utempter' do
   #  it { should be_owned_by 'root' }
   #  it { should be_grouped_into 'tty' }
   #  it { should be_setgid }
   #  its('mode') { should cmp '0715' }
-  #end
+  # end
 
   describe file '/usr/bin/passwd' do
     it { should be_owned_by 'root' }
