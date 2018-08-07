@@ -52,12 +52,15 @@ control '8_Appliance_Application_Files_8.1' do
     its('mode') { should cmp '04711' }
   end
 
-  # describe file '/usr/sbin/utempter' do
-  #  it { should be_owned_by 'root' }
-  #  it { should be_grouped_into 'tty' }
-  #  it { should be_setgid }
-  #  its('mode') { should cmp '0715' }
-  # end
+   describe file '/usr/sbin/utempter' do
+    it { should be_owned_by 'root' }
+    it { should be_grouped_into 'tty' }
+    it { should be_setgid }
+    its('mode') { should cmp '0715' }
+    before do
+      skip if not File.exist?('/usr/sbin/utempter')
+    end
+   end
 
   describe file '/usr/bin/passwd' do
     it { should be_owned_by 'root' }
