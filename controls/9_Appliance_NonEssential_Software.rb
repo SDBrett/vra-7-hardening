@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-control '8_Appliance_NonEssential_Software_8.1' do
+control '9_Appliance_NonEssential_Software_9.1' do
   title 'Verify Non-Essential software is not loaded and reduce attack surface'
   desc 'Verify software loaded with modprob'
 
