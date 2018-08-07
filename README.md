@@ -1,25 +1,61 @@
 # vRA7 Security Hardening Profile
 
 
-This profile implements the [CIS VMware ESXi Benchmark](https://docs.vmware.com/en/vRealize-Automation/7.2/vrealize-automation-72-hardening.pdf).
+This tests the configuration of a vRA appliance against the settings in specified within the [vRA Hardening Guide](https://docs.vmware.com/en/vRealize-Automation/7.2/vrealize-automation-72-hardening.pdf).
 
-## Prerequities
+You can either install Chef Inspec from Chef DK or use the Chef Inspec Docker image. If you're not familiar with 
+managing Ruby
+ environments, the Docker image is the easiest option
+ 
+ - [Chef DK](https://downloads.chef.io/chefdk)
+ - [Inspec GitHub](https://github.com/inspec/inspec)
+ - [Docker Image](https://hub.docker.com/r/chef/inspec/)
 
-- [InSpec](https://inspec.io)
+#### Connecting to vRA appliances
 
-You will need to run this on the vRA Appliance. You can install `inspec` via the Chef DK.
+Inspec uses SSH to connect to the vRA appliance, therefore this security check is not part of the validation checks.
 
-```shell
-~$ curl -L https://chef.io/chef/install.sh | sudo bash -s -- -P chefdk
-```
+Checks are run on the file level and will require validation against each vRA appliance individually.
 
-## Usage
+#### Running with Inspec installation
 
-Currently can be run against servers via inspec exec.
+Clone the project from GitHub
 
-```shell
-~$ inspec exec .
-```
+`git clone https://github.com/SDBrett/vra-7-hardening.git`
+
+Enter the project directory
+
+`cd vra-7-hardening`
+
+Run Inspec against a vRA appliance using key pair
+`inspec exec -t ssh@<user>@<IP/FQDN> -i <path to key> control/<control file>`
+
+Run Inspec against a vRA appliance using password
+`inspec exec -t ssh@<user>@<IP/FQDN> --password <password> control/<control file>`
+
+#### Running with Inspec from Docker
+
+When running Inspec from a container, you are replacing `inspec exec` with the relevant docker commands, but still 
+using the same arguments.
+
+
+Clone the project from GitHub
+
+`git clone https://github.com/SDBrett/vra-7-hardening.git`
+
+Obtain the Docker Image
+'docker pull chef/inspec'
+
+Enter the project directory
+
+`cd vra-7-hardening`
+
+Run Inspec against a vRA appliance using key pair
+`docker run -it --rm -v $(pwd):/share chef/inspec -t ssh@<user>@<IP/FQDN> -i <path to key> control/<control file>`
+
+Run Inspec against a vRA appliance using password
+`docker run -it --rm -v $(pwd):/share chef/inspecc -t ssh@<user>@<IP/FQDN> --password <password> control/<control file>`
+
 
 ## License and Author
 
