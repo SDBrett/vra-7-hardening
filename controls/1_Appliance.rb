@@ -22,13 +22,9 @@ control '1_Appliance_1.1' do
   title 'Ensure bootloader password is set'
   desc  "Setting the boot loader password will require that anyone rebooting the system must enter a password before being able to set command line boot parameters\n\nRationale: Requiring a boot password upon execution of the boot loader will prevent an unauthorized user from entering boot parameters or changing the boot partition. This prevents users from weakening security (e.g. turning off SELinux at boot time)."
 
-  describe.one do
-    %w[/boot/grub/grub.conf /boot/grub/grub.cfg /boot/grub/menu.lst /boot/boot/grub/grub.conf /boot/boot/grub/grub.cfg /boot/boot/grub/menu.lst].each do |f|
-      describe file(f) do
+      describe file('/boot/grub/menu.lst') do
         its(:content) { should match(/^set superusers/) }
         its(:content) { should match(/^password/) }
-      end
-    end
   end
 end
 
@@ -46,6 +42,9 @@ control '1_Appliance_1.2' do
 
   describe file('/etc/apache2/vhosts.d/vcac.conf') do
     its('content') { should include 'SSLProtocol all -SSLv2 -SSLv3' }
+    before do
+      skip if not File.exist?('/etc/apache2/vhosts.d/vcac.conf')
+    end
   end
 
   describe file('/opt/vmware/etc/lighttpd/lighttpd.conf') do
@@ -58,24 +57,24 @@ control '1_Appliance_1.2' do
   end
 
   describe xml('/etc/vco/app-server/server.xml') do
-    its('Server/Service/Connector/attribute::sslEnabledProtocols') { should eq ['TLSv1.1,TLSv1.2,TLSv1'] }
+    its('/Server/Service/Connector@sslEnabledProtocols') { should eq ['TLSv1.1,TLSv1.2,TLSv1'] }
   end
 
   describe xml('/etc/vcac/server.xml') do
-    its('Server/Service/Connector/attribute::sslEnabledProtocols') { should eq ['TLSv1.1,TLSv1.2,TLSv1'] }
+    its('/Server/Service/Connector/@sslEnabledProtocols') { should eq ['TLSv1.1,TLSv1.2,TLSv1'] }
   end
 
-  describe rabbitmq_config.params('ssl', 'versions') do
-    it { should cmp ['tlsv1.2', 'tlsv1.1'] }
-  end
+ # describe rabbitmq_config.params('ssl', 'versions') do
+ #   it { should cmp ['tlsv1.2', 'tlsv1.1'] }
+ # end
 
-  describe rabbitmq_config.params('rabbit', 'ssl_options', 'versions') do
-    it { should cmp ['tlsv1.2', 'tlsv1.1'] }
-  end
+ # describe json('/etc/rabbitmq/('ssl', 'versions') do
+ #   it { should cmp 'tlsv1.2' }
+ # end
 
-  describe xml('/opt/vmware/horizon/workspace/config/server.xml') do
-    its { should include sslEnabledProtocols = 'TLSv1.1,TLSv1.2' }
-  end
+ # describe xml('/opt/vmware/horizon/workspace/conf/server.xml') do
+ #   its { should include "sslEnabledProtocols = 'TLSv1.1,TLSv1.2'" }
+ # end
 
   describe file('/opt/vmware/share/htdocs/service/cafe-services/services.py') do
     its('content') { should include 'conn = httplib.HTTPS()' }
@@ -83,9 +82,10 @@ control '1_Appliance_1.2' do
   end
 
   describe xml('/opt/vmware/horizon/workspace/conf/server.xml') do
-    its('Server/Service/Connector[0]/attribute::SSLEnabled') { should eq ['true'] }
-    its('Server/Service/Connector[1]/attribute::SSLEnabled') { should eq ['true'] }
-    its('Server/Service/Connector[2]/attribute::SSLEnabled') { should eq ['true'] }
+    its('/Server/Service/Connector[1]/@SSLEnabled') { should eq ['true'] }
+    its('/Server/Service/Connector[1]/@sslEnabledProtocols') { should cmp 'TLSv1.1,TLSv1.2' }
+    its('/Server/Service/Connector[3]/@SSLEnabled') { should eq ['true'] }
+    its('/Server/Service/Connector[3]/@sslEnabledProtocols') { should cmp 'TLSv1.1,TLSv1.2' }
   end
 end
 
@@ -99,12 +99,15 @@ control '1_Appliance_1.3' do
     its('mode') { should cmp '0640' }
   end
 
-  describe file('/etc/haproxy/conf.d/20-vcac-config.cfg') do
+  describe file('/etc/haproxy/conf.d/20-vcac.cfg') do
     its(:content) { should match(/(^server local 127.0.0.1)*1500/) }
   end
 
   describe file('/etc/apache2/vhosts.d/vcac.conf') do
     its('content') { should include 'SSLProtocol all -SSLv2 -SSLv3' }
+    	before do
+	  skip if not File.exist?('/etc/apache2/vhosts.d/vcac.conf')
+	end
   end
 
   describe file '/etc/haproxy/conf.d/20-vcac.cfg' do
@@ -134,23 +137,23 @@ control '1_Appliance_1.5' do
   desc 'By default some localhost communication does not use TLS. You can enable TLS across all \
         localhost connections to provide enhanced security.'
   describe xml('/etc/vcac/server.xml') do
-    its('Server/Service/Connector::scheme') { should eq 'https' }
-    its('Server/Service/Connector::secure') { should eq 'true' }
-    its('Server/Service/Connector::SSLEnabled') { should eq 'true' }
-    its('Server/Service/Connector::sslProtocol') { should eq 'TLS' }
-    its('Server/Service/Connector::keystoreFile') { should eq '/etc/vcac/vcac.keystore' }
-    its('Server/Service/Connector::keyAlias') { should eq 'apache' }
-    its('Server/Service/Connector::keystorePass') { should_not eq nil }
+    its('/Server/Service/Connector@scheme') { should eq 'https' }
+    its('/Server/Service/Connector@secure') { should eq 'true' }
+    its('/Server/Service/Connector@SSLEnabled') { should eq 'true' }
+    its('/Server/Service/Connector@sslProtocol') { should eq 'TLS' }
+    its('/Server/Service/Connector@keystoreFile') { should eq '/etc/vcac/vcac.keystore' }
+    its('/Server/Service/Connector@keyAlias') { should eq 'apache' }
+    its('/Server/Service/Connector@keystorePass') { should_not eq nil }
   end
 
   describe xml('/etc/vco/app/server.xml') do
-    its('Server/Service/Connector::scheme') { should eq 'https' }
-    its('Server/Service/Connector::secure') { should eq 'true' }
-    its('Server/Service/Connector::SSLEnabled') { should eq 'true' }
-    its('Server/Service/Connector::sslProtocol') { should eq 'TLS' }
-    its('Server/Service/Connector::keystoreFile') { should eq '/etc/vcac/vcac.keystore' }
-    its('Server/Service/Connector::keyAlias') { should eq 'apache' }
-    its('Server/Service/Connector::keystorePass') { should_not eq nil }
+    its('/Server/Service/Connector@scheme') { should eq 'https' }
+    its('/Server/Service/Connector@secure') { should eq 'true' }
+    its('/Server/Service/Connector@SSLEnabled') { should eq 'true' }
+    its('/Server/Service/Connector@sslProtocol') { should eq 'TLS' }
+    its('/Server/Service/Connector@keystoreFile') { should eq '/etc/vcac/vcac.keystore' }
+    its('/Server/Service/Connector@keyAlias') { should eq 'apache' }
+    its('/Server/Service/Connector@keystorePass') { should_not eq nil }
   end
 end
 
@@ -171,9 +174,19 @@ control '1_Appliance_1.7' do
   desc 'By default some localhost communication does not use TLS. You can enable TLS across all localhost connections \
         to provide enhanced security.'
   describe xml('/etc/vcac/server.xml') do
-    its('Server/Service/Connector::ciphers') { should_not eq nil }
+    its('/Server/Service/Connector@ciphers') { should_not eq nil }
     strong_ciphers.each do |s|
-      its('Server/Service/Connector::ciphers') { should include s }
+      its('/Server/Service/Connector@ciphers') { should include s }
     end
+  end
+end
+
+
+control '1_Appliance_1.8' do
+  title 'Verify TLS encryption on local transmission'
+  desc 'By default some localhost communication does not use TLS. You can enable TLS across all localhost connections \
+ to provide enhanced security.'
+  describe file('/etc/haproxy/conf.d/20-vcac.cfg') do
+    its('content') { should_not match(/^(\s+)((server local 127.0.0.1).)((?!ssl verify none).)*$/) }
   end
 end
