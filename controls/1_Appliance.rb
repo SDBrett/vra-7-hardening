@@ -157,11 +157,14 @@ end
 control '1_Appliance_1.6' do
   title 'Disable disallowed ciphers'
   desc 'Validates disallowed ciphers are disallowed'
-  security_properties_file = File.open('/etc/vcac/security.properties').read
-  current_disallowed = security_properties_file.match(/(?<=consoleproxy.ssl.ciphers.disallowed=).*$/)[0]
-  describe current_disallowed do
-    disallowed_ciphers.each do |s|
-      its('content') { should_not include s }
+
+  describe command('sed -n -e "/^consoleproxy.ssl.ciphers.disallowed=/p" /root/security.properties') do
+    its('stdout') {should_not eq '' }
+    
+    if its('stdout') == ''
+      disallowed_ciphers.each do |s|
+        its('stdout') {should include s }
+      end
     end
   end
 end
@@ -171,9 +174,9 @@ control '1_Appliance_1.7' do
   desc 'By default some localhost communication does not use TLS. You can enable TLS across all localhost connections \
         to provide enhanced security.'
   describe xml('/etc/vcac/server.xml') do
-    its('/Server/Service/Connector@ciphers') { should_not eq nil }
+    its('/Server/Service/Connector/@ciphers') { should_not eq nil }
     strong_ciphers.each do |s|
-      its('/Server/Service/Connector@ciphers') { should include s }
+      its('/Server/Service/Connector/@ciphers') { should include s }
     end
   end
 end
