@@ -29,3 +29,10 @@ control '4_Appliance_User_Accounts_4.2' do
     its('count') { should be > 2 }
   end
 end
+
+control '4_Appliance_User_Accounts_4.3' do
+  title 'Verify postgres user account is locked'
+  describe shadow.users('postgres') do
+    its('passwords.uniq,first') { should cmp '!' }
+  end
+end
