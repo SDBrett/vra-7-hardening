@@ -2,7 +2,8 @@
 
 control '2_Appliance_SSHD_2.1' do
   title 'Verify that the SSH service is not set to auto start'
-  desc  'SSH access should only be used for troubleshooting. As such, it should not be configured to auto start on boot. Check for running is not configured as SSH is required for access to run compliance.'
+  desc  'SSH access should only be used for troubleshooting. As such, it should not be configured to auto start on
+  boot. Check for running is not configured as SSH is required for access to run compliance.'
   describe service('sshd') do
     it { should_not be_enabled }
   end
@@ -55,7 +56,8 @@ end
 
 control '2_Appliance_SSHD_2.5' do
   title 'Client all should not be allowed'
-  desc 'By default, the /etc/hosts.allow file contains a generic entry, sshd: ALL : ALLOW , that allows all access to the secure shell. Restrict this access as appropriate for your organization.'
+  desc 'By default, the /etc/hosts.allow file contains a generic entry, sshd: ALL : ALLOW , that allows all
+  access to the secure shell. Restrict this access as appropriate for your organization.'
   describe etc_hosts_allow.where { daemon == 'sshd' } do
     its('client_list') { should_not include ['ALL'] }
   end
@@ -63,7 +65,7 @@ end
 
 control '2_Appliance_SSHD_2.6' do
   title 'Verify SSH server configuration'
-  desc ''
+  desc 'Check to ensure SSH server configuration file complies'
   describe sshd_config do
     its(:Protocol) { should cmp 2 }
     its(:MaxSessions) { should cmp 1 }

@@ -19,8 +19,9 @@ strong_ciphers = %w[TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
                     TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384]
 
 control '1_Appliance_1.1' do
-  title 'Ensure bootloader password is set'
-  desc  "Setting the boot loader password will require that anyone rebooting the system must enter a password before being able to set command line boot parameters\n\nRationale: Requiring a boot password upon execution of the boot loader will prevent an unauthorized user from entering boot parameters or changing the boot partition. This prevents users from weakening security (e.g. turning off SELinux at boot time)."
+  title 'Ensure boot loader password is set'
+  desc  'Setting the boot loader password will require that anyone rebooting the system must enter a password before
+         being able to set command line boot parameters'
 
       describe file('/boot/grub/menu.lst') do
         its(:content) { should match(/^set superusers/) }
@@ -64,6 +65,7 @@ control '1_Appliance_1.2' do
     its('/Server/Service/Connector/@sslEnabledProtocols') { should eq ['TLSv1.1,TLSv1.2,TLSv1'] }
   end
 
+  # TODO: Follow up rabbitmq_config resource with Chef Issue: https://github.com/inspec/inspec/issues/3273
   # Errors found using the rabbitmq_config resource
  # describe rabbitmq_config.params('ssl', 'versions') do
  #   it { should cmp ['tlsv1.2', 'tlsv1.1'] }
@@ -88,7 +90,8 @@ end
 
 control '1_Appliance_1.3' do
   title 'Validate appliance TLS settings'
-  desc 'By default some localhost communication does not use TLS. You can enable TLS across all localhost connections to provide enhanced security.'
+  desc 'By default some localhost communication does not use TLS. You can enable TLS across all localhost connections
+        to provide enhanced security.'
 
   describe file('/etc/vcac/vcac.keystore') do
     it { should be_owned_by 'vcac' }
@@ -114,7 +117,8 @@ end
 
 control '1_Appliance_1.4' do
   title 'Disable TLS 1.0 in applicable vRealize Automation components'
-  desc 'There is no directive to disable TLS 1.0 in Lighttpd. The restriction on TLS 1.0 use can be partially mitigated by enforcing that OpenSSL does not use cipher suites of TLS 1.0 as described in step 2 below.'
+  desc 'There is no directive to disable TLS 1.0 in Lighttpd. The restriction on TLS 1.0 use can be partially
+        mitigated by enforcing that OpenSSL does not use cipher suites of TLS 1.0 as described in step 2 below.'
 
   describe file('/etc/haproxy/conf.d/20-vcac.cfg') do
     its('content') { should include 'bind 0.0.0.0:443 ssl crt /etc/apache2/server.pem ciphers TLSv1+HIGH:!aNULL:!eNULL:!3DES:!RC4:!CAMELLIA:!DH:!kECDHE:@STRENGTH no-sslv3 no-tlsv10' }
@@ -171,7 +175,7 @@ end
 
 control '1_Appliance_1.7' do
   title 'Validate appliance TLS settings'
-  desc 'By default some localhost communication does not use TLS. You can enable TLS across all localhost connections \
+  desc 'By default some localhost communication does not use TLS. You can enable TLS across all localhost connections
         to provide enhanced security.'
   describe xml('/etc/vcac/server.xml') do
     its('/Server/Service/Connector/@ciphers') { should_not eq nil }
@@ -184,7 +188,7 @@ end
 
 control '1_Appliance_1.8' do
   title 'Verify TLS encryption on local transmission'
-  desc 'By default some localhost communication does not use TLS. You can enable TLS across all localhost connections \
+  desc 'By default some localhost communication does not use TLS. You can enable TLS across all localhost connections
  to provide enhanced security.'
   describe file('/etc/haproxy/conf.d/20-vcac.cfg') do
     its('content') { should_not match(/^(\s+)((server local 127.0.0.1).)((?!ssl verify none).)*$/) }
