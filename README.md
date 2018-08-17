@@ -58,7 +58,7 @@ docker run --rm -it -v $(pwd):/profile chef/inspec exec /profile
 - Make a fancy table to highlight setting coverage
 - Look into controlling verbosity of output, particularly when checking file contents
 - Smile more
-
+- Add controls for Configuring Network Settings for VMware Appliances
 
 ## License and Author
 
