@@ -20,7 +20,10 @@ strong_ciphers = %w[TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
 
 control '1_Appliance_1.1' do
   title 'Ensure bootloader password is set'
-  desc  "Setting the boot loader password will require that anyone rebooting the system must enter a password before being able to set command line boot parameters\n\nRationale: Requiring a boot password upon execution of the boot loader will prevent an unauthorized user from entering boot parameters or changing the boot partition. This prevents users from weakening security (e.g. turning off SELinux at boot time)."
+  desc  'Setting the boot loader password will require that anyone rebooting the system must enter a password before
+being able to set command line boot parameters\n\nRationale: Requiring a boot password upon execution of the boot
+loader will prevent an unauthorized user from entering boot parameters or changing the boot partition.
+This prevents users from weakening security (e.g. turning off SELinux at boot time).'
 
       describe file('/boot/grub/menu.lst') do
         its(:content) { should match(/^set superusers/) }
