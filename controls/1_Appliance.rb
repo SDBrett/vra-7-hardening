@@ -67,6 +67,7 @@ control '1_Appliance_1.2' do
     its('/Server/Service/Connector/@sslEnabledProtocols') { should eq ['TLSv1.1,TLSv1.2,TLSv1'] }
   end
 
+  # TODO: Uncomment and recheck based on git issue https://github.com/inspec/inspec/issues/3273
   # Errors found using the rabbitmq_config resource
  # describe rabbitmq_config.params('ssl', 'versions') do
  #   it { should cmp ['tlsv1.2', 'tlsv1.1'] }
