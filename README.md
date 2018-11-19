@@ -1,19 +1,25 @@
 # vRA7 Security Hardening Profile
 
 
-This profile implements the [CIS VMware ESXi Benchmark](https://docs.vmware.com/en/vRealize-Automation/7.2/vrealize-automation-72-hardening.pdf).
+This profile validates the configuration of a vRA appliance against settings specified in the vRA hardening guide, available [here](https://docs.vmware.com/en/vRealize-Automation/7.2/vrealize-automation-72-hardening.pdf).
 
-## Prerequities
+It is recommended to used certificate authentication when running the checks instead of password authentication.
 
-- [InSpec](https://inspec.io)
+## Prereqs
 
-You will need to run this on the vRA Appliance. You can install `inspec` via the Chef DK.
+The system running the checks connect to the vRA Appliance using SSH. 
 
-```shell
-~$ curl -L https://chef.io/chef/install.sh | sudo bash -s -- -P chefdk
-```
+Local Inspec with ChefDK
+- [CheckDK](https://downloads.chef.io/chefdk)
 
-## Usage
+Inspec Docker image:
+- [Docker](https://www.docker.com)
+- [Chef Inspec Docker image](https://hub.docker.com/r/chef/inspec/)
+
+
+## Usage - Local Inspec install
+
+These steps for performing the checks running an 
 
 Currently can be run against servers via inspec exec.
 
