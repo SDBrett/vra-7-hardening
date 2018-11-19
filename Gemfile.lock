@@ -189,8 +189,7 @@ DEPENDENCIES
   github_changelog_generator (~> 1.12.0)
   highline (~> 1.6.0)
   inspec
-  rack (= 1.6.4)
-  rake
+  rack (~> 1.6.11)
   rubocop
 
 BUNDLED WITH
