@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 control '10_Appliance_Data_At_Rest_10.1' do
-  title ''
-  desc ''
+  title 'Verify the security of database users and accounts used with vRealize Automation'
+  desc 'Verify the security of database users and accounts used with vRealize Automation'
 
   describe postgres_hba_conf('/storage/db/pgdata/pg_hba.conf').where { type == 'local' and user == 'postgres'} do
     its('auth_method') { should eq ['trust'] }

@@ -5,7 +5,7 @@ shadow_files << '/usr/share/baselayout/shadow' if file('/etc/nsswitch.conf').con
 
 control '4_Appliance_User_Accounts_4.1' do
   title 'Ensure password expiration is 90 days or less'
-  desc  ''
+  desc  'Checks maximum password validity is less than 1 year and expiry is over 90 days away'
   describe login_defs do
     its('PASS_MAX_DAYS') { should cmp <= 365 }
   end
@@ -32,6 +32,7 @@ end
 
 control '4_Appliance_User_Accounts_4.3' do
   title 'Verify postgres user account is locked'
+  desc 'The postgres user account should be in the default state of disabled'
   describe shadow.users('postgres') do
     its('passwords.uniq,first') { should cmp '!' }
   end
