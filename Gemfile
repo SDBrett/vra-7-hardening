@@ -4,8 +4,7 @@ source 'https://rubygems.org'
 
 gem 'highline', '~> 1.6.0'
 gem 'inspec'
-gem 'rack', '1.6.4'
-gem 'rack ~> 1.6.11'
+gem 'rack', '~> 1.6.11'
 gem 'rubocop'
 
 group :tools do
